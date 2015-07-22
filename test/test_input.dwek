@@ -1,0 +1,10 @@
+direct_first_name isa [direct] with
+  "form_name": "names"
+  "form_field": "first_name"
+
+copied_name isa [attribute] with
+  "attribute": "direct_first_name"
+
+name_included isa [inclusion] with
+  "value_list": ["Kevin", "Ezra"]
+  "attribute": "copied_name"
