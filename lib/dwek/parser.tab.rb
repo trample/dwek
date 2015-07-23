@@ -14,14 +14,10 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 25)
   attr_accessor :mapper_list
 
   class MapperProxy
-    def initialize(destination, mapper_type, assignment_list = [])
+    def initialize(destination, mapper_type, options = {})
       @destination = destination.to_sym
       @mapper_type = mapper_type.to_sym
-      @options = {}
-
-      assignment_list.each do |assignment|
-        @options.merge!(assignment.to_h)
-      end
+      @options = options
     end
 
     def to_mapper
@@ -29,20 +25,10 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 25)
     end
   end
 
-  class Assignment
-    def initialize(key, value)
-      @key = key
-      @value = value
-    end
-
-    def to_h
-      { @key.to_sym => @value }
-    end
-  end
-
   def parse(string)
     @mapper_list = MapperList.new
     @current_line = 1
+
     @tokens = make_tokens(string)
     do_parse
   end
@@ -117,7 +103,7 @@ racc_reduce_table = [
   2, 16, :_reduce_none,
   4, 17, :_reduce_4,
   6, 17, :_reduce_5,
-  1, 18, :_reduce_6,
+  1, 18, :_reduce_none,
   3, 18, :_reduce_7,
   3, 19, :_reduce_8,
   1, 20, :_reduce_none,
@@ -218,23 +204,18 @@ module_eval(<<'.,.,', 'parser.y', 8)
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 10)
-  def _reduce_6(val, _values, result)
-     result = [val[0]] 
-    result
-  end
-.,.,
+# reduce 6 omitted
 
 module_eval(<<'.,.,', 'parser.y', 11)
   def _reduce_7(val, _values, result)
-     result = [val[0]] + val[2] 
+     result = val[2].merge(val[0]) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 12)
   def _reduce_8(val, _values, result)
-     result = Assignment.new(val[0], val[2]) 
+     result = { val[0].to_sym => val[2] } 
     result
   end
 .,.,

@@ -8,9 +8,9 @@ class Dwek::Parser
     mapping: 'MAP' STRING 'AS' MAPPER  { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3]).to_mapper) }
       | 'MAP' STRING 'AS' MAPPER 'WITH' assignment_list { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3], val[5]).to_mapper) }
 
-    assignment_list: assignment { result = [val[0]] }
-      | assignment 'AND' assignment_list { result = [val[0]] + val[2] }
-    assignment: OPTION '=' assignment_value { result = Assignment.new(val[0], val[2]) }
+    assignment_list: assignment
+      | assignment 'AND' assignment_list { result = val[2].merge(val[0]) }
+    assignment: OPTION '=' assignment_value { result = { val[0].to_sym => val[2] } }
     assignment_value: STRING | array
 
     array: '[' array_contents ']' { result = val[1] }
@@ -25,14 +25,10 @@ end
   attr_accessor :mapper_list
 
   class MapperProxy
-    def initialize(destination, mapper_type, assignment_list = [])
+    def initialize(destination, mapper_type, options = {})
       @destination = destination.to_sym
       @mapper_type = mapper_type.to_sym
-      @options = {}
-
-      assignment_list.each do |assignment|
-        @options.merge!(assignment.to_h)
-      end
+      @options = options
     end
 
     def to_mapper
@@ -40,20 +36,10 @@ end
     end
   end
 
-  class Assignment
-    def initialize(key, value)
-      @key = key
-      @value = value
-    end
-
-    def to_h
-      { @key.to_sym => @value }
-    end
-  end
-
   def parse(string)
     @mapper_list = MapperList.new
     @current_line = 1
+
     @tokens = make_tokens(string)
     do_parse
   end
