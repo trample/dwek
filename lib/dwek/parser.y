@@ -7,8 +7,8 @@ class Dwek::Parser
       | 'map' STRING 'as' MAPPER 'with' linebreak_list assignment_list { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3], val[6]).to_mapper) }
     assignment_list: assignment { result = [val[0]] }
       | assignment assignment_list { result = [val[0]] + val[1] }
-    assignment: STRING ':' STRING linebreak_list { result = Assignment.new(val[0], val[2]) }
-      | STRING ':' array linebreak_list { result = Assignment.new(val[0], val[2]) }
+    assignment: STRING '=' assignment_value linebreak_list { result = Assignment.new(val[0], val[2]) }
+    assignment_value: STRING | array
     linebreak_list: linebreak | linebreak linebreak_list
     linebreak: NEWLINE
     array: '[' array_contents ']' { result = val[1] }
@@ -67,7 +67,7 @@ end
         # ignore non-newline whitespace
       when /\A\{(\w+)\}/
         result << [:MAPPER, $1]
-      when /\A(?:map|as|with|:|\[|\]|\,)/
+      when /\A(?:map|as|with|=|\[|\]|\,)/
         result << [$&, nil]
       when /\A\'(\w+)\'/, /\A\"(\w+)\"/
         result << [:STRING, $1]

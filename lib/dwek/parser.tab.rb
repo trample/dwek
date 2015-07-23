@@ -58,7 +58,7 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 23)
         # ignore non-newline whitespace
       when /\A\{(\w+)\}/
         result << [:MAPPER, $1]
-      when /\A(?:map|as|with|:|\[|\]|\,)/
+      when /\A(?:map|as|with|=|\[|\]|\,)/
         result << [$&, nil]
       when /\A\'(\w+)\'/, /\A\"(\w+)\"/
         result << [:STRING, $1]
@@ -78,40 +78,40 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 23)
 ##### State transition tables begin ###
 
 racc_action_table = [
-    28,    11,    21,    13,    29,    30,    13,    27,    23,     8,
-     9,     3,    13,     7,    18,    18,    20,     6,    13,    13,
-     3,     4,    31 ]
+    28,    11,    22,    13,    29,    30,    13,    27,    24,     8,
+     9,     3,    13,     7,    18,    18,    20,     6,    13,     3,
+     4,    31 ]
 
 racc_action_check = [
-    23,     9,    20,     9,    26,    26,    12,    23,    20,     6,
-     8,     0,    11,     4,    14,    17,    18,     3,    21,    22,
-     2,     1,    30 ]
+    24,     9,    20,     9,    26,    26,    12,    24,    20,     6,
+     8,     0,    11,     4,    14,    17,    18,     3,    21,     2,
+     1,    30 ]
 
 racc_action_pointer = [
-     9,    21,    18,    14,    13,   nil,     5,   nil,     5,    -5,
+     9,    20,    17,    14,    13,   nil,     5,   nil,     5,    -5,
    nil,     4,    -2,   nil,    11,   nil,   nil,    12,     9,   nil,
-    -1,    10,    11,    -3,   nil,   nil,    -6,   nil,   nil,   nil,
-    19,   nil ]
+    -1,    10,   nil,   nil,    -3,   nil,    -6,   nil,   nil,   nil,
+    18,   nil ]
 
 racc_action_default = [
-   -16,   -16,    -1,   -16,   -16,    -2,   -16,    32,   -16,   -16,
-    -3,   -16,    -9,   -11,   -16,   -10,    -4,    -5,   -16,    -6,
-   -16,   -16,   -16,   -16,    -7,    -8,   -16,   -13,   -14,   -12,
-   -16,   -15 ]
+   -17,   -17,    -1,   -17,   -17,    -2,   -17,    32,   -17,   -17,
+    -3,   -17,   -10,   -12,   -17,   -11,    -4,    -5,   -17,    -6,
+   -17,   -17,    -8,    -9,   -17,    -7,   -17,   -14,   -15,   -13,
+   -17,   -16 ]
 
 racc_goto_table = [
-    10,    16,    14,    15,    19,     1,    22,     5,    26,   nil,
-   nil,   nil,    24,    25 ]
+    10,    16,    14,    15,    19,     1,    21,     5,    23,    26,
+   nil,   nil,    25 ]
 
 racc_goto_check = [
-     3,     4,     3,     3,     4,     1,     6,     1,     8,   nil,
-   nil,   nil,     3,     3 ]
+     3,     4,     3,     3,     4,     1,     6,     1,     7,     9,
+   nil,   nil,     3 ]
 
 racc_goto_pointer = [
-   nil,     5,   nil,    -9,   -13,   nil,   -14,   nil,   -15 ]
+   nil,     5,   nil,    -9,   -13,   nil,   -14,   -12,   nil,   -15 ]
 
 racc_goto_default = [
-   nil,   nil,     2,   nil,   nil,    17,   nil,    12,   nil ]
+   nil,   nil,     2,   nil,   nil,    17,   nil,   nil,    12,   nil ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
@@ -122,16 +122,17 @@ racc_reduce_table = [
   1, 16, :_reduce_5,
   2, 16, :_reduce_6,
   4, 17, :_reduce_7,
-  4, 17, :_reduce_8,
+  1, 18, :_reduce_none,
+  1, 18, :_reduce_none,
   1, 15, :_reduce_none,
   2, 15, :_reduce_none,
-  1, 19, :_reduce_none,
-  3, 18, :_reduce_12,
-  2, 18, :_reduce_13,
-  1, 20, :_reduce_14,
-  3, 20, :_reduce_15 ]
+  1, 20, :_reduce_none,
+  3, 19, :_reduce_13,
+  2, 19, :_reduce_14,
+  1, 21, :_reduce_15,
+  3, 21, :_reduce_16 ]
 
-racc_reduce_n = 16
+racc_reduce_n = 17
 
 racc_shift_n = 32
 
@@ -143,7 +144,7 @@ racc_token_table = {
   "as" => 4,
   :MAPPER => 5,
   "with" => 6,
-  ":" => 7,
+  "=" => 7,
   :NEWLINE => 8,
   "[" => 9,
   "]" => 10,
@@ -177,7 +178,7 @@ Racc_token_to_s_table = [
   "\"as\"",
   "MAPPER",
   "\"with\"",
-  "\":\"",
+  "\"=\"",
   "NEWLINE",
   "\"[\"",
   "\"]\"",
@@ -188,6 +189,7 @@ Racc_token_to_s_table = [
   "linebreak_list",
   "assignment_list",
   "assignment",
+  "assignment_value",
   "array",
   "linebreak",
   "array_contents" ]
@@ -237,12 +239,7 @@ module_eval(<<'.,.,', 'parser.y', 9)
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 10)
-  def _reduce_8(val, _values, result)
-     result = Assignment.new(val[0], val[2]) 
-    result
-  end
-.,.,
+# reduce 8 omitted
 
 # reduce 9 omitted
 
@@ -250,29 +247,31 @@ module_eval(<<'.,.,', 'parser.y', 10)
 
 # reduce 11 omitted
 
+# reduce 12 omitted
+
 module_eval(<<'.,.,', 'parser.y', 13)
-  def _reduce_12(val, _values, result)
+  def _reduce_13(val, _values, result)
      result = val[1] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 14)
-  def _reduce_13(val, _values, result)
+  def _reduce_14(val, _values, result)
      result = [] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 15)
-  def _reduce_14(val, _values, result)
+  def _reduce_15(val, _values, result)
      result = [val[0]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 16)
-  def _reduce_15(val, _values, result)
+  def _reduce_16(val, _values, result)
      result = val[0] + [val[2]] 
     result
   end
