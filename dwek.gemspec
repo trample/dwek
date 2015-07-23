@@ -13,10 +13,11 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.files = Dir['lib/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
+  s.executables << 'dwek'
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'activerecord'
-  s.add_dependency 'activesupport'
+  s.add_dependency 'activerecord', '> 4'
+  s.add_dependency 'activesupport', '> 4'
   s.add_dependency 'racc'
 
   s.add_development_dependency 'sqlite3'

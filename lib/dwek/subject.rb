@@ -1,6 +1,8 @@
 module Dwek
   class Subject
 
+    attr_reader :attributes, :subject_id
+
     def initialize(subject_id, attributes = {})
       @subject_id = subject_id
       @attributes = attributes

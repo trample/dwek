@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+# ensure valid file
+if ARGV.first.nil? || !File.exists?(ARGV.first)
+  puts 'You must specify a valid input file.'
+  exit 1
+end
+
+# require setup
+require 'bundler/setup'
+require 'active_record'
+
+# add to load path and add lib and test
+$LOAD_PATH.unshift File.expand_path('../..', __FILE__)
+require 'lib/dwek'
+require 'test/fixtures'
+
+# build a new parser and read in the first line
+parser = Dwek::Parser.new
+parser.parse(File.read(ARGV.first))
+
+# apply the parsed dwek to each subject
+subjects = [
+  Dwek::Subject.new('1'),
+  Dwek::Subject.new('2')
+]
+subjects.each do |subject|
+  parser.mapper_list.apply_to(subject)
+end
+
+# build a printer and print out the table
+Dwek::Printer.new(subjects).print_table

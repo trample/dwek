@@ -11,7 +11,7 @@ module Dwek
     end
 
     def add_mapper(destination, mapper_type, options, sub_mappers = [])
-      mapper_class = Dwek::Mappers.const_get(mapper_type.to_s.camelize + 'Mapper')
+      mapper_class = Dwek::Mappers.const_get(mapper_type.to_s.capitalize + 'Mapper')
       mapper = mapper_class.new(destination, options)
 
       sub_mappers.each do |sub_mapper|

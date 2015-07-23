@@ -56,12 +56,10 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 23)
         # ignore non-newline whitespace
       when /\A\[(\w+)\]/
         result << [:MAPPER, $1]
-      when /\A(?:isa|with|:|\[|\]|\,)/
+      when /\A(?:map|as|with|:|\[|\]|\,)/
         result << [$&, nil]
       when /\A\'(\w+)\'/, /\A\"(\w+)\"/
         result << [:STRING, $1]
-      when /\A\w+/
-        result << [:WORD, $&]
       else
         raise "can't recognize #{string.first(10)}"
       end
@@ -78,47 +76,47 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 23)
 ##### State transition tables begin ###
 
 racc_action_table = [
-    27,    17,    10,    20,    26,    12,    22,    28,    29,     8,
-     3,    12,    12,     7,    17,    19,     6,    12,    12,     3,
-     4,    30 ]
+    28,    11,    21,    13,    29,    30,    13,    27,    23,     8,
+     9,     3,    13,     7,    18,    18,    20,     6,    13,    13,
+     3,     4,    31 ]
 
 racc_action_check = [
-    22,    13,     8,    19,    22,     8,    19,    25,    25,     6,
-     0,    10,    11,     4,    16,    17,     3,    20,    21,     2,
-     1,    29 ]
+    23,     9,    20,     9,    26,    26,    12,    23,    20,     6,
+     8,     0,    11,     4,    14,    17,    18,     3,    21,    22,
+     2,     1,    30 ]
 
 racc_action_pointer = [
-     8,    20,    17,    13,    13,   nil,     5,   nil,    -3,   nil,
-     3,     4,   nil,    -5,   nil,   nil,     8,     8,   nil,    -3,
-     9,    10,    -6,   nil,   nil,    -3,   nil,   nil,   nil,    15,
-   nil ]
+     9,    21,    18,    14,    13,   nil,     5,   nil,     5,    -5,
+   nil,     4,    -2,   nil,    11,   nil,   nil,    12,     9,   nil,
+    -1,    10,    11,    -3,   nil,   nil,    -6,   nil,   nil,   nil,
+    19,   nil ]
 
 racc_action_default = [
-   -16,   -16,    -1,   -16,   -16,    -2,   -16,    31,   -16,    -3,
-   -16,    -9,   -11,   -16,   -10,    -4,    -5,   -16,    -6,   -16,
-   -16,   -16,   -16,    -7,    -8,   -16,   -13,   -14,   -12,   -16,
-   -15 ]
+   -16,   -16,    -1,   -16,   -16,    -2,   -16,    32,   -16,   -16,
+    -3,   -16,    -9,   -11,   -16,   -10,    -4,    -5,   -16,    -6,
+   -16,   -16,   -16,   -16,    -7,    -8,   -16,   -13,   -14,   -12,
+   -16,   -15 ]
 
 racc_goto_table = [
-     9,    15,    13,    14,    18,     1,    21,     5,    25,   nil,
-   nil,   nil,    23,    24 ]
+    10,    16,    14,    15,    19,     1,    22,     5,    26,   nil,
+   nil,   nil,    24,    25 ]
 
 racc_goto_check = [
      3,     4,     3,     3,     4,     1,     6,     1,     8,   nil,
    nil,   nil,     3,     3 ]
 
 racc_goto_pointer = [
-   nil,     5,   nil,    -8,   -12,   nil,   -13,   nil,   -14 ]
+   nil,     5,   nil,    -9,   -13,   nil,   -14,   nil,   -15 ]
 
 racc_goto_default = [
-   nil,   nil,     2,   nil,   nil,    16,   nil,    11,   nil ]
+   nil,   nil,     2,   nil,   nil,    17,   nil,    12,   nil ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
   1, 13, :_reduce_none,
   2, 13, :_reduce_none,
-  4, 14, :_reduce_3,
-  6, 14, :_reduce_4,
+  5, 14, :_reduce_3,
+  7, 14, :_reduce_4,
   1, 16, :_reduce_5,
   2, 16, :_reduce_6,
   4, 17, :_reduce_7,
@@ -133,16 +131,16 @@ racc_reduce_table = [
 
 racc_reduce_n = 16
 
-racc_shift_n = 31
+racc_shift_n = 32
 
 racc_token_table = {
   false => 0,
   :error => 1,
-  :WORD => 2,
-  "isa" => 3,
-  :MAPPER => 4,
-  "with" => 5,
-  :STRING => 6,
+  "map" => 2,
+  :STRING => 3,
+  "as" => 4,
+  :MAPPER => 5,
+  "with" => 6,
   ":" => 7,
   :NEWLINE => 8,
   "[" => 9,
@@ -172,11 +170,11 @@ Racc_arg = [
 Racc_token_to_s_table = [
   "$end",
   "error",
-  "WORD",
-  "\"isa\"",
+  "\"map\"",
+  "STRING",
+  "\"as\"",
   "MAPPER",
   "\"with\"",
-  "STRING",
   "\":\"",
   "NEWLINE",
   "\"[\"",
@@ -204,14 +202,14 @@ Racc_debug_parser = false
 
 module_eval(<<'.,.,', 'parser.y', 5)
   def _reduce_3(val, _values, result)
-     @mapper_list.add_mapper(*MapperProxy.new(val[0], val[2]).to_mapper) 
+     @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3]).to_mapper) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 6)
   def _reduce_4(val, _values, result)
-     @mapper_list.add_mapper(*MapperProxy.new(val[0], val[2], val[5]).to_mapper) 
+     @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3], val[6]).to_mapper) 
     result
   end
 .,.,

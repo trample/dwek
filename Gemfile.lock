@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     dwek (0.0.1)
-      activerecord
-      activesupport
+      activerecord (> 4)
+      activesupport (> 4)
       racc
 
 GEM

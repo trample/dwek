@@ -3,8 +3,8 @@
 class Dwek::Parser
   rule
     mapping_list: mapping | mapping mapping_list
-    mapping: WORD 'isa' MAPPER linebreak_list { @mapper_list.add_mapper(*MapperProxy.new(val[0], val[2]).to_mapper) }
-      | WORD 'isa' MAPPER 'with' linebreak_list assignment_list { @mapper_list.add_mapper(*MapperProxy.new(val[0], val[2], val[5]).to_mapper) }
+    mapping: 'map' STRING 'as' MAPPER linebreak_list { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3]).to_mapper) }
+      | 'map' STRING 'as' MAPPER 'with' linebreak_list assignment_list { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3], val[6]).to_mapper) }
     assignment_list: assignment { result = [val[0]] }
       | assignment assignment_list { result = [val[0]] + val[1] }
     assignment: STRING ':' STRING linebreak_list { result = Assignment.new(val[0], val[2]) }
@@ -65,12 +65,10 @@ end
         # ignore non-newline whitespace
       when /\A\[(\w+)\]/
         result << [:MAPPER, $1]
-      when /\A(?:isa|with|:|\[|\]|\,)/
+      when /\A(?:map|as|with|:|\[|\]|\,)/
         result << [$&, nil]
       when /\A\'(\w+)\'/, /\A\"(\w+)\"/
         result << [:STRING, $1]
-      when /\A\w+/
-        result << [:WORD, $&]
       else
         raise "can't recognize #{string.first(10)}"
       end
