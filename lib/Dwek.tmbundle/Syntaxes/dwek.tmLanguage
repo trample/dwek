@@ -75,6 +75,20 @@
 			<key>name</key>
 			<string>comment.line.number-sign.ruby</string>
 		</dict>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.variable.ruby</string>
+				</dict>
+			</dict>
+			<key>match</key>
+			<string>(@)[a-zA-Z_]\w*</string>
+			<key>name</key>
+			<string>variable.other.readwrite.instance.ruby</string>
+		</dict>
 	</array>
 	<key>scopeName</key>
 	<string>source.dwek</string>

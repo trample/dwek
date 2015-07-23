@@ -7,25 +7,16 @@
 require 'racc/parser.rb'
 
 # $Id$
+require 'dwek/variable_registry'
+
 module Dwek
   class Parser < Racc::Parser
 
-module_eval(<<'...end parser.y/module_eval...', 'parser.y', 25)
+module_eval(<<'...end parser.y/module_eval...', 'parser.y', 30)
   attr_accessor :mapper_list
 
-  class MapperProxy
-    def initialize(destination, mapper_type, options = {})
-      @destination = destination.to_sym
-      @mapper_type = mapper_type.to_sym
-      @options = options
-    end
-
-    def to_mapper
-      [@destination, @mapper_type.to_sym, @options]
-    end
-  end
-
   def parse(string)
+    @variable_registry = VariableRegistry.new
     @mapper_list = MapperList.new
     @current_line = 1
 
@@ -39,14 +30,14 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 25)
       case string
       when /\A(?:\r\n|\r|\n)/
         @current_line += 1
-      when /\A\s+/
-        # ignore non-newline whitespace
-      when /\A#[^\r\n|\r|\n]+/
-        # comments are ignored
+      when /\A\s+/, /\A#[^\r\n|\r|\n]+/
+        # comments and whitespace are ignored
       when /\A\{(\w+)\}/
         result << [:MAPPER, $1]
       when /\A(?:map|as|with|and|=|\[|\]|\,|;)/i
         result << [$&.upcase, nil]
+      when /\A@(\w+)/
+        result << [:VARIABLE, $1]
       when /\A(\w+)/
         result << [:OPTION, $1]
       when /\A\'(\w+)\'/, /\A\"(\w+)\"/
@@ -67,73 +58,90 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 25)
 ##### State transition tables begin ###
 
 racc_action_table = [
-    25,    12,    20,    26,    27,     8,     9,    10,    24,    22,
-    11,     7,    15,    16,    17,    15,     4,     4,     5,    28 ]
+    16,     9,     5,    16,     6,    16,    20,    16,    14,    17,
+    22,    14,    17,    14,    17,    14,    17,    16,     5,    18,
+     6,    25,    26,    24,    10,    14,    17,    27,     7,    31,
+    32,    33,    31,    11 ]
 
 racc_action_check = [
-    22,    11,    17,    23,    23,     4,     5,     8,    22,    17,
-    10,     3,    12,    14,    15,    16,     0,     2,     1,    27 ]
+    17,     3,     0,    26,     0,     6,    12,    11,    17,    17,
+    17,    26,    26,     6,     6,    11,    11,    33,     2,     7,
+     2,    21,    21,    20,     4,    33,    33,    24,     1,    27,
+    30,    31,    32,     5 ]
 
 racc_action_pointer = [
-    13,    18,    14,     9,     1,     6,   nil,   nil,     2,   nil,
-     4,    -6,     3,   nil,     5,     4,     6,    -2,   nil,   nil,
-   nil,   nil,    -4,    -9,   nil,   nil,   nil,    15,   nil ]
+    -1,    28,    15,    -1,    22,    29,     2,    19,   nil,   nil,
+   nil,     4,     0,   nil,   nil,   nil,   nil,    -3,   nil,   nil,
+    16,     8,   nil,   nil,    19,   nil,     0,    19,   nil,   nil,
+    21,    27,    22,    14,   nil,   nil ]
 
 racc_action_default = [
-   -15,   -15,    -1,   -15,   -15,   -15,    -2,    -3,   -15,    29,
-   -15,    -4,   -15,    -5,    -6,   -15,   -15,   -15,    -7,    -8,
-    -9,   -10,   -15,   -15,   -12,   -13,   -11,   -15,   -14 ]
+   -19,   -19,    -1,   -19,   -19,   -19,   -19,   -19,    -2,    -3,
+    -4,   -19,   -19,   -11,   -12,   -13,   -14,   -19,    36,    -5,
+   -19,   -19,   -16,   -17,    -6,   -15,   -19,   -19,   -18,    -7,
+    -8,   -19,   -19,   -19,    -9,   -10 ]
 
 racc_goto_table = [
-    13,     1,    19,     6,    18,    21,    23 ]
+    12,    29,     1,    21,     8,    19,    34,   nil,   nil,   nil,
+   nil,    23,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
+    28,   nil,   nil,   nil,   nil,   nil,   nil,    35 ]
 
 racc_goto_check = [
-     4,     1,     6,     1,     4,     7,     8 ]
+     5,     6,     1,    10,     1,     5,     6,   nil,   nil,   nil,
+   nil,     5,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
+     5,   nil,   nil,   nil,   nil,   nil,   nil,     5 ]
 
 racc_goto_pointer = [
-   nil,     1,   nil,   nil,   -12,   nil,   -15,   -12,   -16 ]
+   nil,     2,   nil,   nil,   nil,    -6,   -26,   nil,   nil,   nil,
+   -14 ]
 
 racc_goto_default = [
-   nil,   nil,     2,     3,   nil,    14,   nil,   nil,   nil ]
+   nil,   nil,     2,     3,     4,   nil,   nil,    30,    13,    15,
+   nil ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
-  1, 15, :_reduce_none,
-  2, 15, :_reduce_none,
+  1, 16, :_reduce_none,
   2, 16, :_reduce_none,
-  4, 17, :_reduce_4,
-  6, 17, :_reduce_5,
-  1, 18, :_reduce_none,
-  3, 18, :_reduce_7,
-  3, 19, :_reduce_8,
+  2, 17, :_reduce_none,
+  2, 17, :_reduce_none,
+  3, 18, :_reduce_5,
+  4, 19, :_reduce_6,
+  6, 19, :_reduce_7,
+  1, 21, :_reduce_none,
+  3, 21, :_reduce_9,
+  3, 22, :_reduce_10,
   1, 20, :_reduce_none,
   1, 20, :_reduce_none,
-  3, 21, :_reduce_11,
-  2, 21, :_reduce_12,
-  1, 22, :_reduce_13,
-  3, 22, :_reduce_14 ]
+  1, 20, :_reduce_none,
+  1, 23, :_reduce_14,
+  3, 24, :_reduce_15,
+  2, 24, :_reduce_16,
+  1, 25, :_reduce_17,
+  3, 25, :_reduce_18 ]
 
-racc_reduce_n = 15
+racc_reduce_n = 19
 
-racc_shift_n = 29
+racc_shift_n = 36
 
 racc_token_table = {
   false => 0,
   :error => 1,
   ";" => 2,
-  "MAP" => 3,
-  :STRING => 4,
-  "AS" => 5,
-  :MAPPER => 6,
-  "WITH" => 7,
-  "AND" => 8,
-  :OPTION => 9,
-  "=" => 10,
-  "[" => 11,
-  "]" => 12,
-  "," => 13 }
+  :VARIABLE => 3,
+  "=" => 4,
+  "MAP" => 5,
+  "AS" => 6,
+  :MAPPER => 7,
+  "WITH" => 8,
+  "AND" => 9,
+  :OPTION => 10,
+  :STRING => 11,
+  "[" => 12,
+  "]" => 13,
+  "," => 14 }
 
-racc_nt_base = 14
+racc_nt_base = 15
 
 racc_use_result_var = true
 
@@ -157,24 +165,27 @@ Racc_token_to_s_table = [
   "$end",
   "error",
   "\";\"",
+  "VARIABLE",
+  "\"=\"",
   "\"MAP\"",
-  "STRING",
   "\"AS\"",
   "MAPPER",
   "\"WITH\"",
   "\"AND\"",
   "OPTION",
-  "\"=\"",
+  "STRING",
   "\"[\"",
   "\"]\"",
   "\",\"",
   "$start",
   "configuration",
   "expression",
-  "mapping",
-  "assignment_list",
   "assignment",
-  "assignment_value",
+  "mapping",
+  "object",
+  "options_list",
+  "option",
+  "variable",
   "array",
   "array_contents" ]
 
@@ -190,63 +201,81 @@ Racc_debug_parser = false
 
 # reduce 3 omitted
 
-module_eval(<<'.,.,', 'parser.y', 7)
-  def _reduce_4(val, _values, result)
-     @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3]).to_mapper) 
+# reduce 4 omitted
+
+module_eval(<<'.,.,', 'parser.y', 6)
+  def _reduce_5(val, _values, result)
+     @variable_registry.set(val[0], val[2]) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 8)
-  def _reduce_5(val, _values, result)
-     @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3], val[5]).to_mapper) 
+  def _reduce_6(val, _values, result)
+     @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym) 
     result
   end
 .,.,
 
-# reduce 6 omitted
-
-module_eval(<<'.,.,', 'parser.y', 11)
+module_eval(<<'.,.,', 'parser.y', 9)
   def _reduce_7(val, _values, result)
+     @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym, val[5]) 
+    result
+  end
+.,.,
+
+# reduce 8 omitted
+
+module_eval(<<'.,.,', 'parser.y', 12)
+  def _reduce_9(val, _values, result)
      result = val[2].merge(val[0]) 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 12)
-  def _reduce_8(val, _values, result)
+module_eval(<<'.,.,', 'parser.y', 13)
+  def _reduce_10(val, _values, result)
      result = { val[0].to_sym => val[2] } 
     result
   end
 .,.,
 
-# reduce 9 omitted
+# reduce 11 omitted
 
-# reduce 10 omitted
+# reduce 12 omitted
 
-module_eval(<<'.,.,', 'parser.y', 15)
-  def _reduce_11(val, _values, result)
-     result = val[1] 
-    result
-  end
-.,.,
+# reduce 13 omitted
 
 module_eval(<<'.,.,', 'parser.y', 16)
-  def _reduce_12(val, _values, result)
-     result = [] 
-    result
-  end
-.,.,
-
-module_eval(<<'.,.,', 'parser.y', 17)
-  def _reduce_13(val, _values, result)
-     result = [val[0]] 
+  def _reduce_14(val, _values, result)
+     result = @variable_registry.get(val[0]) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 18)
-  def _reduce_14(val, _values, result)
+  def _reduce_15(val, _values, result)
+     result = val[1] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'parser.y', 19)
+  def _reduce_16(val, _values, result)
+     result = [] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'parser.y', 20)
+  def _reduce_17(val, _values, result)
+     result = [val[0]] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'parser.y', 21)
+  def _reduce_18(val, _values, result)
      result = val[0] + [val[2]] 
     result
   end
