@@ -1,11 +1,13 @@
-# this is a test input file with dwek
+/**
+ * This is a test dwek query file
+ */
 
-# map the direct_first_name field
+// map the direct_first_name field
 @direct = "direct_first_name";
 MAP @direct AS {direct} WITH form_name = "names" AND form_field = "first_name";
 
-# map the copied_name field
+// map the copied_name field
 MAP "copied_name" AS {attribute} WITH attribute = @direct;
 
-# map the name_included field
+// map the name_included field
 MAP "name_included" AS {inclusion} WITH value_list = ["Kevin", "Ezra"] AND attribute = "copied_name";

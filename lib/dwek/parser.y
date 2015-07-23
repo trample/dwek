@@ -29,6 +29,10 @@ require 'dwek/variable_registry'
 ---- inner
   attr_accessor :mapper_list
 
+  def initialize(verbose = false)
+    @verbose = verbose
+  end
+
   def parse(string)
     @variable_registry = VariableRegistry.new
     @mapper_list = MapperList.new
@@ -41,11 +45,10 @@ require 'dwek/variable_registry'
   def make_tokens(string)
     result = []
     until string.empty?
+      skipped = false
       case string
-      when /\A(?:\r\n|\r|\n)/
-        @current_line += 1
-      when /\A\s+/, /\A#[^\r\n|\r|\n]+/
-        # comments and whitespace are ignored
+      when /\A\/\*.*?\*\//m, /\A(?:\n|\s+|\/\/[^\n]+)/
+        skipped = true
       when /\A\{(\w+)\}/
         result << [:MAPPER, $1]
       when /\A(?:map|as|with|and|=|\[|\]|\,|;)/i
@@ -57,8 +60,9 @@ require 'dwek/variable_registry'
       when /\A\'(\w+)\'/, /\A\"(\w+)\"/
         result << [:STRING, $1]
       else
-        raise SyntaxError, "line #{@current_line}"
+        raise SyntaxError, "can't parse #{string.first(10)}"
       end
+      puts result.last.inspect unless skipped || !@verbose
       string = $'
     end
     result << [false, '$end']

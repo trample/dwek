@@ -69,11 +69,27 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>#</string>
+			<string>//</string>
 			<key>end</key>
 			<string>\n</string>
 			<key>name</key>
-			<string>comment.line.number-sign.ruby</string>
+			<string>comment.line.dwek</string>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>/\*</string>
+			<key>captures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.comment.js</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>\*/</string>
+			<key>name</key>
+			<string>comment.block.dwek</string>
 		</dict>
 		<dict>
 			<key>captures</key>
@@ -81,13 +97,13 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.definition.variable.ruby</string>
+					<string>punctuation.definition.variable.dwek</string>
 				</dict>
 			</dict>
 			<key>match</key>
 			<string>(@)[a-zA-Z_]\w*</string>
 			<key>name</key>
-			<string>variable.other.readwrite.instance.ruby</string>
+			<string>variable.other.readwrite.instance.dwek</string>
 		</dict>
 	</array>
 	<key>scopeName</key>
