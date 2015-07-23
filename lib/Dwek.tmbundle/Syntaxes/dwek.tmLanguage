@@ -12,7 +12,7 @@
 	<array>
 		<dict>
 			<key>match</key>
-			<string>\b(map|as|with)\b</string>
+			<string>\b(?i:map|as|with|and)\b</string>
 			<key>name</key>
 			<string>keyword.control.dwek</string>
 		</dict>
@@ -66,6 +66,14 @@
 					<string>constant.character.escape.dwek</string>
 				</dict>
 			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>#</string>
+			<key>end</key>
+			<string>\n</string>
+			<key>name</key>
+			<string>comment.line.number-sign.ruby</string>
 		</dict>
 	</array>
 	<key>scopeName</key>

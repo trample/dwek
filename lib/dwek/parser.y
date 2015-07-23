@@ -2,15 +2,17 @@
 
 class Dwek::Parser
   rule
-    mapping_list: mapping | mapping mapping_list
-    mapping: 'map' STRING 'as' MAPPER linebreak_list { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3]).to_mapper) }
-      | 'map' STRING 'as' MAPPER 'with' linebreak_list assignment_list { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3], val[6]).to_mapper) }
+    configuration: expression | expression configuration
+    expression: mapping ';'
+
+    mapping: 'MAP' STRING 'AS' MAPPER  { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3]).to_mapper) }
+      | 'MAP' STRING 'AS' MAPPER 'WITH' assignment_list { @mapper_list.add_mapper(*MapperProxy.new(val[1], val[3], val[5]).to_mapper) }
+
     assignment_list: assignment { result = [val[0]] }
-      | assignment assignment_list { result = [val[0]] + val[1] }
-    assignment: STRING '=' assignment_value linebreak_list { result = Assignment.new(val[0], val[2]) }
+      | assignment 'AND' assignment_list { result = [val[0]] + val[2] }
+    assignment: OPTION '=' assignment_value { result = Assignment.new(val[0], val[2]) }
     assignment_value: STRING | array
-    linebreak_list: linebreak | linebreak linebreak_list
-    linebreak: NEWLINE
+
     array: '[' array_contents ']' { result = val[1] }
       | '[' ']' { result = [] }
     array_contents: STRING { result = [val[0]] }
@@ -61,14 +63,17 @@ end
     until string.empty?
       case string
       when /\A(?:\r\n|\r|\n)/
-        result << [:NEWLINE, nil]
         @current_line += 1
       when /\A\s+/
         # ignore non-newline whitespace
+      when /\A#[^\r\n|\r|\n]+/
+        # comments are ignored
       when /\A\{(\w+)\}/
         result << [:MAPPER, $1]
-      when /\A(?:map|as|with|=|\[|\]|\,)/
-        result << [$&, nil]
+      when /\A(?:map|as|with|and|=|\[|\]|\,|;)/i
+        result << [$&.upcase, nil]
+      when /\A(\w+)/
+        result << [:OPTION, $1]
       when /\A\'(\w+)\'/, /\A\"(\w+)\"/
         result << [:STRING, $1]
       else

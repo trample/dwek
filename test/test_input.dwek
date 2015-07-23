@@ -1,10 +1,10 @@
-map "direct_first_name" as {direct} with
-  "form_name" = "names"
-  "form_field" = "first_name"
+# this is a test input file with dwek
 
-map "copied_name" as {attribute} with
-  "attribute" = "direct_first_name"
+# map the direct_first_name field
+MAP "direct_first_name" AS {direct} WITH form_name = "names" AND form_field = "first_name";
 
-map "name_included" as {inclusion} with
-  "value_list" = ["Kevin", "Ezra"]
-  "attribute" = "copied_name"
+# map the copied_name field
+MAP "copied_name" AS {attribute} WITH attribute = "direct_first_name";
+
+# map the name_included field
+MAP "name_included" AS {inclusion} WITH value_list = ["Kevin", "Ezra"] AND attribute = "copied_name";
