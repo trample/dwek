@@ -51,6 +51,7 @@ end
 
   def parse(string)
     @mapper_list = MapperList.new
+    @current_line = 1
     @tokens = make_tokens(string)
     do_parse
   end
@@ -61,6 +62,7 @@ end
       case string
       when /\A(?:\r\n|\r|\n)/
         result << [:NEWLINE, nil]
+        @current_line += 1
       when /\A\s+/
         # ignore non-newline whitespace
       when /\A\[(\w+)\]/
@@ -70,7 +72,7 @@ end
       when /\A\'(\w+)\'/, /\A\"(\w+)\"/
         result << [:STRING, $1]
       else
-        raise "can't recognize #{string.first(10)}"
+        raise SyntaxError, "line #{@current_line}"
       end
       string = $'
     end

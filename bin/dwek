@@ -13,17 +13,28 @@ require 'active_record'
 # add to load path and add lib and test
 $LOAD_PATH.unshift File.expand_path('../..', __FILE__)
 require 'lib/dwek'
-require 'test/fixtures'
-
-# build a new parser and read in the first line
 parser = Dwek::Parser.new
-parser.parse(File.read(ARGV.first))
 
-# apply the parsed dwek to each subject
+# if the syntax flag is given, just check syntax
+if ARGV[1] == '-c'
+  begin
+    parser.parse(File.read(ARGV.first))
+  rescue SyntaxError => error
+    puts "Error: #{error.message}"
+    exit 1
+  end
+  puts "Syntax ok."
+  exit 0
+end
+
+# require the form records and build the subjects
+require 'test/fixtures'
 subjects = [
   Dwek::Subject.new('1'),
   Dwek::Subject.new('2')
 ]
+
+parser.parse(File.read(ARGV.first))
 subjects.each do |subject|
   parser.mapper_list.apply_to(subject)
 end
