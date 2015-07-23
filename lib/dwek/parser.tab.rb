@@ -7,13 +7,14 @@
 require 'racc/parser.rb'
 
 # $Id$
+require 'dwek/lexer'
 require 'dwek/variable_registry'
 
 module Dwek
   class Parser < Racc::Parser
 
-module_eval(<<'...end parser.y/module_eval...', 'parser.y', 30)
-  attr_accessor :mapper_list
+module_eval(<<'...end parser.y/module_eval...', 'parser.y', 32)
+  attr_reader :mapper_list
 
   def initialize(verbose = false)
     @verbose = verbose
@@ -22,41 +23,15 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 30)
   def parse(string)
     @variable_registry = VariableRegistry.new
     @mapper_list = MapperList.new
-    @current_line = 1
 
-    @tokens = make_tokens(string)
+    @lexer = Lexer.new
+    @lexer.parse(string)
+
     do_parse
   end
 
-  def make_tokens(string)
-    result = []
-    until string.empty?
-      skipped = false
-      case string
-      when /\A\/\*.*?\*\//m, /\A(?:\n|\s+|\/\/[^\n]+)/
-        skipped = true
-      when /\A\{(\w+)\}/
-        result << [:MAPPER, $1]
-      when /\A(?:map|as|with|and|=|\[|\]|\,|;)/i
-        result << [$&.upcase, nil]
-      when /\A@(\w+)/
-        result << [:VARIABLE, $1]
-      when /\A(\w+)/
-        result << [:OPTION, $1]
-      when /\A\'(\w+)\'/, /\A\"(\w+)\"/
-        result << [:STRING, $1]
-      else
-        raise SyntaxError, "can't parse #{string.first(10)}"
-      end
-      puts result.last.inspect unless skipped || !@verbose
-      string = $'
-    end
-    result << [false, '$end']
-    result
-  end
-
   def next_token
-    @tokens.shift
+    @lexer.next_token
   end
 ...end parser.y/module_eval...
 ##### State transition tables begin ###
@@ -147,7 +122,7 @@ racc_token_table = {
 
 racc_nt_base = 15
 
-racc_use_result_var = true
+racc_use_result_var = false
 
 Racc_arg = [
   racc_action_table,
@@ -207,40 +182,35 @@ Racc_debug_parser = false
 
 # reduce 4 omitted
 
-module_eval(<<'.,.,', 'parser.y', 6)
-  def _reduce_5(val, _values, result)
+module_eval(<<'.,.,', 'parser.y', 7)
+  def _reduce_5(val, _values)
      @variable_registry.set(val[0], val[2]) 
-    result
-  end
-.,.,
-
-module_eval(<<'.,.,', 'parser.y', 8)
-  def _reduce_6(val, _values, result)
-     @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym) 
-    result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 9)
-  def _reduce_7(val, _values, result)
+  def _reduce_6(val, _values)
+     @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym) 
+  end
+.,.,
+
+module_eval(<<'.,.,', 'parser.y', 10)
+  def _reduce_7(val, _values)
      @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym, val[5]) 
-    result
   end
 .,.,
 
 # reduce 8 omitted
 
-module_eval(<<'.,.,', 'parser.y', 12)
-  def _reduce_9(val, _values, result)
-     result = val[2].merge(val[0]) 
-    result
+module_eval(<<'.,.,', 'parser.y', 13)
+  def _reduce_9(val, _values)
+     val[2].merge(val[0]) 
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 13)
-  def _reduce_10(val, _values, result)
-     result = { val[0].to_sym => val[2] } 
-    result
+module_eval(<<'.,.,', 'parser.y', 14)
+  def _reduce_10(val, _values)
+     { val[0].to_sym => val[2] } 
   end
 .,.,
 
@@ -250,42 +220,37 @@ module_eval(<<'.,.,', 'parser.y', 13)
 
 # reduce 13 omitted
 
-module_eval(<<'.,.,', 'parser.y', 16)
-  def _reduce_14(val, _values, result)
-     result = @variable_registry.get(val[0]) 
-    result
-  end
-.,.,
-
-module_eval(<<'.,.,', 'parser.y', 18)
-  def _reduce_15(val, _values, result)
-     result = val[1] 
-    result
+module_eval(<<'.,.,', 'parser.y', 17)
+  def _reduce_14(val, _values)
+     @variable_registry.get(val[0]) 
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 19)
-  def _reduce_16(val, _values, result)
-     result = [] 
-    result
+  def _reduce_15(val, _values)
+     val[1] 
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 20)
-  def _reduce_17(val, _values, result)
-     result = [val[0]] 
-    result
+  def _reduce_16(val, _values)
+     [] 
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 21)
-  def _reduce_18(val, _values, result)
-     result = val[0] + [val[2]] 
-    result
+  def _reduce_17(val, _values)
+     [val[0]] 
   end
 .,.,
 
-def _reduce_none(val, _values, result)
+module_eval(<<'.,.,', 'parser.y', 22)
+  def _reduce_18(val, _values)
+     val[0] + [val[2]] 
+  end
+.,.,
+
+def _reduce_none(val, _values)
   val[0]
 end
 
