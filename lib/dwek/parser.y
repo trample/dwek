@@ -65,7 +65,7 @@ end
         @current_line += 1
       when /\A\s+/
         # ignore non-newline whitespace
-      when /\A\[(\w+)\]/
+      when /\A\{(\w+)\}/
         result << [:MAPPER, $1]
       when /\A(?:map|as|with|:|\[|\]|\,)/
         result << [$&, nil]

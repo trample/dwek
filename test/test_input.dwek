@@ -1,10 +1,10 @@
-map "direct_first_name" as [direct] with
+map "direct_first_name" as {direct} with
   "form_name": "names"
   "form_field": "first_name"
 
-map "copied_name" as [attribute] with
+map "copied_name" as {attribute} with
   "attribute": "direct_first_name"
 
-map "name_included" as [inclusion] with
+map "name_included" as {inclusion} with
   "value_list": ["Kevin", "Ezra"]
   "attribute": "copied_name"

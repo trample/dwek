@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>contactEmailRot13</key>
+	<string>xqrvfm@gevnyargjbexf.pbz</string>
+	<key>contactName</key>
+	<string>Kevin Deisz</string>
+	<key>description</key>
+	<string>Support for the Dwek language.</string>
+	<key>name</key>
+	<string>Dwek</string>
+	<key>uuid</key>
+	<string>D8E7E4AF-94C2-4E58-B4C5-AA870CED293D</string>
+</dict>
+</plist>
