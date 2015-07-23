@@ -4,7 +4,7 @@ module Dwek
     def initialize(subjects)
       @subjects = subjects
       @attributes = [:subject_id]
-      @lengths = [:subject_id.length]
+      @lengths = [:subject_id.to_s.length]
 
       subjects.first.attributes.keys.each do |attribute|
         @attributes << attribute

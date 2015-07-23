@@ -1,10 +1,11 @@
+# directly maps from a given form and field
 class Dwek::Mappers::DirectMapper < Dwek::Mapper
 
-  desc "a direct mapping from the '*form_name*' form's '*form_field*' field"
-  required :form_name, :form_field
+  desc "a direct mapping from the '*form*' form's '*field*' field"
+  required :form, :field
 
   def value_from(subject) #:nodoc:
-    record = subject.get_records_for(@options[:form_name]).first
-    record[@options[:form_field].to_sym] if record
+    record = subject.get_records_for(@options[:form]).first
+    record[@options[:field].to_sym] if record
   end
 end

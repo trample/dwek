@@ -1,3 +1,4 @@
+# returns a newline-separated list of the submappers' values
 class Dwek::Mappers::ConcatMapper < Dwek::Mapper
 
   desc 'a concatenated list of:'
