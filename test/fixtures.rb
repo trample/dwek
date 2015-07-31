@@ -4,3 +4,6 @@ names << { subject_id: '2', first_name: 'Ezra', last_name: 'Freedman' }
 
 occupations = Dwek::Form.new('roles')
 occupations << { subject_id: '2', title: 'Chief Technology Officer' }
+
+ages = Dwek::Form.new('ages')
+ages << { subject_id: '1', age: 24 }

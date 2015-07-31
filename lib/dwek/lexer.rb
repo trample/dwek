@@ -12,6 +12,8 @@ module Dwek
         case string
         when /\A\/\*.*?\*\//m, /\A(?:\n|\s+|\/\/[^\n]+)/
           skipped = true
+        when /\A(\d+)/
+          @tokens << [:NUMBER, $1.to_i]
         when /\A\{(\w+)\}/
           @tokens << [:MAPPER, $1]
         when /\A(?:map|as|with|and|=|\[|\]|\,|;)/i

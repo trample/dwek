@@ -12,5 +12,8 @@ class ParserTest < ActiveSupport::TestCase
     assert_equal 'Kevin', subject.get_attribute(:direct_first_name)
     assert_equal 'Kevin', subject.get_attribute(:copied_name)
     assert subject.get_attribute(:name_included)
+
+    assert_equal 24, subject.get_attribute(:age)
+    assert subject.get_attribute(:age_is_24)
   end
 end

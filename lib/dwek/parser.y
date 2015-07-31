@@ -14,7 +14,7 @@ class Dwek::Parser
       | option 'AND' options_list { val[2].merge(val[0]) }
     option: OPTION '=' object { { val[0].to_sym => val[2] } }
 
-    object: variable | STRING | array
+    object: variable | STRING | array | NUMBER
     variable: VARIABLE { @variable_registry.get(val[0]) }
 
     array: '[' array_contents ']' { val[1] }
