@@ -1,5 +1,9 @@
 # $Id$
 class Dwek::Parser
+  prechigh
+    left HIGH_OPERATOR
+    left LOW_OPERATOR
+  preclow
   options no_result_var
   rule
     configuration: expression | expression configuration
@@ -14,8 +18,12 @@ class Dwek::Parser
       | option 'AND' options_list { val[2].merge(val[0]) }
     option: OPTION '=' object { { val[0].to_sym => val[2] } }
 
-    object: variable | STRING | array | NUMBER
+    object: STRING | array | exp
     variable: VARIABLE { @variable_registry.get(val[0]) }
+
+    exp: exp HIGH_OPERATOR exp { val[0].send(val[1].to_sym, val[2]) }
+      | exp LOW_OPERATOR exp { val[0].send(val[1].to_sym, val[2]) }
+      | NUMBER | variable
 
     array: '[' array_contents ']' { val[1] }
       | '[' ']' { [] }
