@@ -1,9 +1,4 @@
-@var1 = 5 + 5 * 5;
-@var2 = 5 - 5;
-@var3 = 5 * 5;
-@var4 = 5 / 5;
-
-PRINT @var1;
-PRINT @var2;
-PRINT @var3;
-PRINT @var4;
+PRINT 5 + 5 * (5 + 5);
+PRINT 5 - 5;
+PRINT 5 * 5;
+PRINT 5 / 5;
