@@ -22,7 +22,7 @@ class ParserTest < ActiveSupport::TestCase
     output = capture_output do
       parser.parse(File.read('test/support/number_parsing.dwek'))
     end
-    assert_equal "direct_first_name\n5\n", output
+    assert_equal "30\n0\n25\n1\n", output
   end
 
   private

@@ -24,6 +24,10 @@ module Dwek
           @tokens << [:OPTION, $1]
         when /\A\'(\w+)\'/, /\A\"(\w+)\"/
           @tokens << [:STRING, $1]
+        when /\A([\*\/])/
+          @tokens << [:HIGH_OPERATOR, $1]
+        when /\A([\+\-])/
+          @tokens << [:LOW_OPERATOR, $1]
         else
           raise SyntaxError, "can't parse #{string.first(10)}"
         end
