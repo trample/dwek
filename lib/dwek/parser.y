@@ -3,7 +3,7 @@ class Dwek::Parser
   options no_result_var
   rule
     configuration: expression | expression configuration
-    expression: assignment ';' | mapping ';'
+    expression: assignment ';' | mapping ';' | print ';'
 
     assignment: VARIABLE '=' object { @variable_registry.set(val[0], val[2]) }
 
@@ -21,6 +21,8 @@ class Dwek::Parser
       | '[' ']' { [] }
     array_contents: object { [val[0]] }
       | array_contents ',' object { val[0] + [val[2]] }
+
+    print: 'PRINT' object { puts val[1] }
 end
 
 ---- header

@@ -1,0 +1,3 @@
+@direct = "direct_first_name";
+PRINT @direct;
+PRINT 5;

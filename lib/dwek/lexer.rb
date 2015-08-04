@@ -16,7 +16,7 @@ module Dwek
           @tokens << [:NUMBER, $1.to_i]
         when /\A\{(\w+)\}/
           @tokens << [:MAPPER, $1]
-        when /\A(?:map|as|with|and|=|\[|\]|\,|;)/i
+        when /\A(?:map|as|with|and|print|=|\[|\]|\,|;)/i
           @tokens << [$&.upcase, nil]
         when /\A@(\w+)/
           @tokens << [:VARIABLE, $1]

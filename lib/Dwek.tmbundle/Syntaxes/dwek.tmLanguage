@@ -12,7 +12,7 @@
 	<array>
 		<dict>
 			<key>match</key>
-			<string>\b(?i:map|as|with|and)\b</string>
+			<string>\b(?i:map|as|with|and|print)\b</string>
 			<key>name</key>
 			<string>keyword.control.dwek</string>
 		</dict>
