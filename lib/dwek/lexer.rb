@@ -26,6 +26,8 @@ module Dwek
           @tokens << [:OPTION, $1]
         when /\A\'(\w+)\'/, /\A\"(\w+)\"/
           @tokens << [:STRING, $1]
+        when /\A((?:[\+\-\*\/\%]|\*\*)\=)/
+          @tokens << [:OPERATOR_ASSIGNMENT, $1]
         when /\A([\*\/])/
           @tokens << [:OPERATOR_LEVEL2, $1]
         when /\A([\+\-])/

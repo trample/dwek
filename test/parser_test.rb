@@ -22,7 +22,7 @@ class ParserTest < ActiveSupport::TestCase
     output = capture_output do
       parser.parse(File.read('test/support/number_parsing.dwek'))
     end
-    assert_equal [55, 0, 25, 1], output.split.map(&:to_i)
+    assert_equal [55, 0, 25, 1, 10, 5, 25, 5, 0, 9], output.split.map(&:to_i)
   end
 
   private

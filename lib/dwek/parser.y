@@ -9,9 +9,10 @@ class Dwek::Parser
 
   rule
     configuration: expression | expression configuration
-    expression: assignment ';' | mapping ';' | print ';'
+    expression: assignment ';' | assignment_exp ';' | mapping ';' | print ';'
 
     assignment: VARIABLE '=' object { @variable_registry.set(val[0], val[2]) }
+    assignment_exp: VARIABLE OPERATOR_ASSIGNMENT exp { @variable_registry.assign_set(val[0], val[1], val[2]) }
 
     mapping: 'MAP' object 'AS' MAPPER  { @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym) }
       | 'MAP' object 'AS' MAPPER 'WITH' options_list { @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym, val[5]) }
