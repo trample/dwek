@@ -1,6 +1,7 @@
 # $Id$
 class Dwek::Parser
   prechigh
+    left OPERATOR_LEVEL3
     left OPERATOR_LEVEL2
     left OPERATOR_LEVEL1
   preclow
@@ -24,7 +25,8 @@ class Dwek::Parser
     object: STRING | array | exp
     variable: VARIABLE { @variable_registry.get(val[0]) }
 
-    exp: exp OPERATOR_LEVEL2 exp { val[0].send(val[1].to_sym, val[2]) }
+    exp: exp OPERATOR_LEVEL3 exp { val[0].send(val[1].to_sym, val[2]) }
+      | exp OPERATOR_LEVEL2 exp { val[0].send(val[1].to_sym, val[2]) }
       | exp OPERATOR_LEVEL1 exp { val[0].send(val[1].to_sym, val[2]) }
       | '(' exp ')' { val[1] }
       | NUMBER | variable
@@ -35,6 +37,7 @@ class Dwek::Parser
       | array_contents ',' object { val[0] + [val[2]] }
 
     print: 'PRINT' object { puts val[1] }
+
 end
 
 ---- header
