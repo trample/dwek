@@ -1,0 +1,2 @@
+map 'dem_birthdat' as {direct} with form = 'dem' and field = 'birthdat';
+map 'dem_sex' as {direct} with form = 'dem' and field = 'sex';
