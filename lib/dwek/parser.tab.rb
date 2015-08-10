@@ -22,8 +22,6 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 53)
 
   def parse(string)
     @variable_registry = VariableRegistry.new
-    @mapper_list = MapperList.new
-
     @lexer = Lexer.new(verbose: @verbose)
     @lexer.parse(string)
 
@@ -256,13 +254,13 @@ module_eval(<<'.,.,', 'parser.y', 15)
 
 module_eval(<<'.,.,', 'parser.y', 17)
   def _reduce_9(val, _values)
-     @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym, val[5]) 
+     MapperFactory.build(val[1].to_sym, val[3].to_sym, val[5]).apply 
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 18)
   def _reduce_10(val, _values)
-     @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym, {}, val[5]) 
+     MapperFactory.build(val[1].to_sym, val[3].to_sym, {}, val[5]).apply 
   end
 .,.,
 

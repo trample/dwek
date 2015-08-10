@@ -10,7 +10,9 @@ class AttributeMapperTest < ActiveSupport::TestCase
   end
 
   def test_value_from
-    subject = Dwek::Subject.new('1', name: 'Kevin')
+    subject = Dwek::Subject.new('1')
+    subject.set_attribute(:name, 'Kevin')
+
     mapper = Dwek::Mappers::AttributeMapper.new(:dest, attribute: :name)
     assert_equal 'Kevin', mapper.value_from(subject)
   end

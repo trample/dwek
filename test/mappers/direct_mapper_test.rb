@@ -11,12 +11,12 @@ class DirectMapperTest < ActiveSupport::TestCase
   end
 
   def test_value_from
-    subject = Dwek::Subject.new('1')
+    subject = Dwek::Subject.new('0201004')
 
-    mapper = Dwek::Mappers::DirectMapper.new(:dest, form: 'names', field: 'first_name')
-    assert_equal 'Kevin', mapper.value_from(subject)
+    mapper = Dwek::Mappers::DirectMapper.new(:dest, form: 'dem', field: 'age_c')
+    assert_equal '56', mapper.value_from(subject)
 
-    mapper = Dwek::Mappers::DirectMapper.new(:dest, form: 'roles', field: 'title')
-    assert_nil mapper.value_from(subject)
+    mapper = Dwek::Mappers::DirectMapper.new(:dest, form: 'dem', field: 'sex')
+    assert_equal '1', mapper.value_from(subject)
   end
 end

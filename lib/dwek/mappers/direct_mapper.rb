@@ -5,7 +5,7 @@ class Dwek::Mappers::DirectMapper < Dwek::Mapper
   required :form, :field
 
   def value_from(subject) #:nodoc:
-    record = subject.get_records_for(@options[:form]).first
-    record[@options[:field].to_sym] if record
+    record = subject.get_records_for(options[:form]).limit(1).to_a.first
+    record[options[:field].to_sym] if record
   end
 end

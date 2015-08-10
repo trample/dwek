@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for file in $(ls); do
+  sed 's/^"[^"]*",//g' $file > $file.out1
+  sed 's/^"E/"/g' $file.out1 > $file.out2
+  rm $file.out1
+  mv $file.out2 $file
+done

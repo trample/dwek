@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activerecord', '> 4'
   s.add_dependency 'activesupport', '> 4'
-  s.add_dependency 'racc'
-
-  s.add_development_dependency 'sqlite3'
+  s.add_dependency 'mysql2', '>= 0.3'
+  s.add_dependency 'racc', '>= 1.4'
 end

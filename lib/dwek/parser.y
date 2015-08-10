@@ -15,8 +15,8 @@ class Dwek::Parser
     assignment: VARIABLE '=' object { @variable_registry.set(val[0], val[2]) }
     assignment_exp: VARIABLE OPERATOR_ASSIGNMENT exp { @variable_registry.assign_set(val[0], val[1], val[2]) }
 
-    mapping: 'MAP' object 'AS' MAPPER 'WITH' options_list { @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym, val[5]) }
-      | 'MAP' object 'AS' MAPPER 'INCLUDING' submapping_list { @mapper_list.add_mapper(val[1].to_sym, val[3].to_sym, {}, val[5]) }
+    mapping: 'MAP' object 'AS' MAPPER 'WITH' options_list { MapperFactory.build(val[1].to_sym, val[3].to_sym, val[5]).apply }
+      | 'MAP' object 'AS' MAPPER 'INCLUDING' submapping_list { MapperFactory.build(val[1].to_sym, val[3].to_sym, {}, val[5]).apply }
 
     submapping_list: submapping { [val[0]] }
       | submapping ',' submapping_list { [val[0]] + val[2] }
@@ -58,8 +58,6 @@ require 'dwek/variable_registry'
 
   def parse(string)
     @variable_registry = VariableRegistry.new
-    @mapper_list = MapperList.new
-
     @lexer = Lexer.new(verbose: @verbose)
     @lexer.parse(string)
 
