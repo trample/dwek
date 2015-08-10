@@ -15,5 +15,7 @@ class MapperParsingTest < ActiveSupport::TestCase
 
     assert_equal 24, subject.get_attribute(:age)
     assert subject.get_attribute(:age_is_24)
+
+    assert_equal "Kevin\n24", subject.get_attribute(:list)
   end
 end

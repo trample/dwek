@@ -3,17 +3,22 @@
  */
 
 // map the direct_first_name field
-@direct = "direct_first_name";
-MAP @direct AS {direct} WITH form = "names" AND field = "first_name";
+@direct = 'direct_first_name';
+map @direct as {direct} with form = 'names' and field = 'first_name';
 
 // map the copied_name field
-MAP "copied_name" AS {attribute} WITH attribute = @direct;
+map 'copied_name' as {attribute} with attribute = @direct;
 
 // map the name_included field
-MAP "name_included" AS {inclusion} WITH values = ["Kevin", "Ezra"] AND attribute = "copied_name";
+map 'name_included' as {inclusion} with values = ['Kevin', 'Ezra'] and attribute = 'copied_name';
 
 // map the age field
-MAP "age" AS {direct} WITH form = "ages" AND field = "age";
+map 'age' as {direct} with form = 'ages' and field = 'age';
 
 // map the age is 24 field
-MAP "age_is_24" AS {inclusion} WITH values = [24] AND attribute = "age";
+map 'age_is_24' as {inclusion} with values = [24] and attribute = 'age';
+
+// map a joined list of copied_name and age
+map 'list' as {concat} including
+	map {attribute} with attribute = 'copied_name',
+	map {attribute} with attribute = 'age';
