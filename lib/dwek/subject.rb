@@ -27,9 +27,9 @@ module Dwek
     end
 
     class << self
-      def each(&block)
+      def apply(mapper)
         table.all.each do |subject|
-          yield new(subject.id, subject)
+          mapper.apply_to(new(subject.id, subject))
         end
       end
 

@@ -24,9 +24,7 @@ module Dwek
     end
 
     def apply
-      Subject.each do |subject|
-        apply_to(subject)
-      end
+      Subject.apply(self)
     end
 
     class << self
