@@ -14,8 +14,6 @@ module Dwek
   class Parser < Racc::Parser
 
 module_eval(<<'...end parser.y/module_eval...', 'parser.y', 53)
-  attr_reader :mapper_list
-
   def initialize(verbose = false)
     @verbose = verbose
   end

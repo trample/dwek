@@ -50,8 +50,6 @@ require 'dwek/lexer'
 require 'dwek/variable_registry'
 
 ---- inner
-  attr_reader :mapper_list
-
   def initialize(verbose = false)
     @verbose = verbose
   end
