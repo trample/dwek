@@ -3,9 +3,9 @@ module Dwek
 
     attr_accessor :instance, :subject_id
 
-    def initialize(subject_id, instance = nil)
+    def initialize(subject_id)
       self.subject_id = subject_id
-      self.instance = instance || self.class.table.find_or_initialize_by(id: subject_id)
+      self.instance = self.class.table.find_or_initialize_by(id: subject_id)
     end
 
     def get_records_for(form_name)
@@ -28,8 +28,8 @@ module Dwek
 
     class << self
       def apply(mapper)
-        table.all.each do |subject|
-          mapper.apply_to(new(subject.id, subject))
+        table.ids.each do |subject_id|
+          mapper.apply_to(new(subject_id))
         end
       end
 
