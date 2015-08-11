@@ -25,3 +25,6 @@ Dwek::Subject.init_from((1..1000))
 
 ActiveSupport.test_order = :random
 require 'minitest/autorun'
+
+# Dwek::Subject.init_from((1..10))
+# Dwek::ParallelMapping.new(Dwek::Mappers::DirectMapper.new(:first_name, form: 'person', field: 'first_name'))
