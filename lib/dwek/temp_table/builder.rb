@@ -55,7 +55,6 @@ module Dwek
 
         # create the table with the set columns
         def create_table(options = {})
-          options.merge!(temporary: true)
           options.reverse_merge!(id: false)
 
           ActiveRecord::Migration.create_table(table_name.to_sym, options) do |t|

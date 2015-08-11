@@ -1,6 +1,8 @@
 module Dwek
   class Subject
 
+    WORKER_COUNT = 5
+
     attr_accessor :instance, :subject_id
 
     def initialize(subject_id)
@@ -28,7 +30,7 @@ module Dwek
 
     class << self
       def apply(mapper)
-        table.ids.each do |subject_id|
+        Parallel.each(table.ids, in_processes: WORKER_COUNT) do |subject_id|
           mapper.apply_to(new(subject_id))
         end
       end

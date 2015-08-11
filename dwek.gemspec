@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport', '> 4'
   s.add_dependency 'mysql2', '>= 0.3'
   s.add_dependency 'racc', '>= 1.4'
+  s.add_dependency 'parallel', '>= 1.6'
 
   s.add_development_dependency 'faker', '>= 1.4'
 end

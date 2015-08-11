@@ -9,6 +9,7 @@ module Dwek
       ], id: :string)
 
       temp_table.build_class do
+        self.primary_key = :id
         serialize :mapped_attributes
       end
     end
