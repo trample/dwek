@@ -17,11 +17,11 @@ ActiveRecord::Base.establish_connection(
 )
 
 require 'dwek'
-Dir[Pathname.new('test/fixtures').join('{dem,enrol}.csv')].each do |filepath|
+Dir[Pathname.new('test/fixtures').join('*.csv')].each do |filepath|
   Dwek::Form.new(filepath)
 end
 Dwek::SubjectTableFactory.build
-Dwek::Subject.init_from(Dwek::TempTable::Enrol.distinct.limit(100).pluck(:subject))
+Dwek::Subject.init_from((1..1000))
 
 ActiveSupport.test_order = :random
 require 'minitest/autorun'
