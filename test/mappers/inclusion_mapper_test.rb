@@ -11,7 +11,8 @@ class InclusionMapperTest < ActiveSupport::TestCase
   end
 
   def test_value_from
-    subject = Dwek::Subject.new('1', name: 'Kevin')
+    subject = Dwek::Subject.new('1')
+    subject.set_attribute(:name, 'Kevin')
 
     mapper = Dwek::Mappers::InclusionMapper.new(:dest, attribute: :name, values: %w[foo bar])
     assert_not mapper.value_from(subject)

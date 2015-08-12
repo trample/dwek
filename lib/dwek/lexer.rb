@@ -60,7 +60,7 @@ module Dwek
 
       # the keywords used by the language
       def keyword_tokens
-        %w{ map as with and print }
+        %w{ map as with and print including }
       end
 
       # the punctuation tokens used by the language

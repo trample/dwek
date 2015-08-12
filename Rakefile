@@ -16,6 +16,9 @@ end
 
 Bundler::GemHelper.install_tasks
 
+
+
+
 require 'rake/testtask'
 
 Rake::TestTask.new(:test) do |t|
@@ -26,3 +29,17 @@ Rake::TestTask.new(:test) do |t|
 end
 
 task default: :test
+
+
+
+
+namespace :test do
+  task :generate_data do
+    require 'pathname'
+    %w[config_list config generator subject_count].each do |file|
+      require "./test/test_data/#{file}"
+    end
+
+    TestData::Generator.new(Pathname('test/fixtures')).run
+  end
+end

@@ -1,8 +1,12 @@
+require 'forwardable'
+
 module Dwek
   class Mapper
 
     attr_reader :destination, :options, :mapper_list
-    delegate :add_mapper, to: :@mapper_list
+
+    extend Forwardable
+    def_delegators :mapper_list, :add_mapper
 
     def initialize(destination, options = {})
       @destination = destination
@@ -17,6 +21,10 @@ module Dwek
     def apply_to(subject)
       value = self.value_from(subject)
       subject.set_attribute(@destination, value)
+    end
+
+    def apply
+      Subject.apply(self)
     end
 
     class << self

@@ -5,6 +5,6 @@ class Dwek::Mappers::AttributeMapper < Dwek::Mapper
   required :attribute
 
   def value_from(subject) #:nodoc:
-    subject.get_attribute(@options[:attribute])
+    subject.get_attribute(options[:attribute])
   end
 end

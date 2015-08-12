@@ -2,20 +2,21 @@ module Dwek
   # stores records about a certain set of data for a group of subject
   class Form
 
-    # initialize the list of records
-    def initialize(name)
-      @records = []
-      self.class.cache[name] = self
-    end
+    attr_accessor :klass
 
-    # add a record to the list
-    def <<(record)
-      @records << record
+    # initialize the list of records
+    def initialize(filepath)
+      name = Pathname(filepath).basename('.csv').to_s
+      self.class.cache[name] = self
+
+      temp_table = TempTable::Builder.new(name)
+      temp_table.import_from(filepath)
+      self.klass = temp_table.build_class
     end
 
     # retrieve all records for a given subject id
     def get(subject_id)
-      @records.select { |record| record[:subject_id] == subject_id }
+      klass.where(subject: subject_id)
     end
 
     class << self

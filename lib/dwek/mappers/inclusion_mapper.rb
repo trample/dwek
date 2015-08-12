@@ -5,6 +5,6 @@ class Dwek::Mappers::InclusionMapper < Dwek::Mapper
   required :values, :attribute
 
   def value_from(subject) #:nodoc:
-    @options[:values].include?(subject.get_attribute(@options[:attribute]))
+    options[:values].include?(subject.get_attribute(options[:attribute]))
   end
 end
